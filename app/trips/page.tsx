@@ -2,6 +2,7 @@
 import React, {
     useState,
     useEffect,
+    useRef
 } from 'react';
 import { useRouter } from 'next/navigation'; // Import useRouter from Next.js
 import type { Trip, CreateTripRequest, EditableTrip } from '@/trip_types';
@@ -14,8 +15,6 @@ type NewTrip = {
   }[];
 };    
     const [trips, setTrips] = useState<Trip[]>([]);
-    const [selectedTripId, setSelectedTripId] = useState('');
-    const [previewTrip, setPreviewTrip] = useState<Trip | null>(null);
     const [newTrip, setNewTrip] = useState<NewTrip>({
   legs: [
     {
@@ -27,7 +26,12 @@ type NewTrip = {
 });
     const [editedTrip, setEditedTrip] = useState<EditableTrip | null>(null);;
     const [deletePreviewTrip, setDeletePreviewTrip] = useState<Trip | null>(null);
+    const createModalRef = useRef<HTMLDivElement>(null);
+    const editModalRef = useRef<HTMLDivElement>(null);
+    const deleteModalRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
+    const [editTripId, setEditTripId] = useState('');
+    const [deleteTripId, setDeleteTripId] = useState('');
     const addLeg = () => {
   setNewTrip({
     ...newTrip,
@@ -134,9 +138,13 @@ const updateDeletedLeg = (
 };
 
     useEffect(() => {
-        import('@/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js');
-        fetchTrips();
-    }, []);
+  const load = async () => {
+    await import('@/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js');
+    fetchTrips();
+  };
+
+  load();
+}, []);
 
 
  const handleEditTripSubmit = async (
@@ -158,12 +166,12 @@ const updateDeletedLeg = (
 };
 
 const handleDeleteTrip = async (
-  selectedTripId: string,
+  deleteTripId: string,
   fetchTrips: () => Promise<void>
 ) => {
-  if (!selectedTripId) return;
+  if (!deleteTripId) return;
 
-  await fetch(`/api/trips/${selectedTripId}`, {
+  await fetch(`/api/trips/${deleteTripId}`, {
     method: 'DELETE',
   });
 
@@ -172,6 +180,8 @@ const handleDeleteTrip = async (
     
     const onAddSubmit = ( e: React.FormEvent<HTMLFormElement>) => {
         handleTripSubmit(e, newTrip, fetchTrips);
+        resetNewTrip();
+        closeModal(createModalRef);
     };
     const onEditSubmit = (
   e: React.FormEvent<HTMLFormElement>
@@ -183,10 +193,11 @@ const handleDeleteTrip = async (
     editedTrip,
     fetchTrips
   );
+  closeModal(editModalRef);
 };
     const onEditSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = e.target.value; 
-    setSelectedTripId(id);
+    setEditTripId(id);
     const trip = trips.find((t) => t._id === id);
     if (trip) {
         setEditedTrip({
@@ -220,11 +231,12 @@ const removeEditedLeg = (index: number) => {
 };
     const onDeleteSubmit = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        handleDeleteTrip(selectedTripId, fetchTrips);
+        handleDeleteTrip(deleteTripId, fetchTrips);
+        closeModal(deleteModalRef);
     };
     const onDeleteSelectChange = ( e: React.ChangeEvent<HTMLSelectElement>) => {
         const id = e.target.value;
-        setSelectedTripId(id);
+        setDeleteTripId(id);
         const trip = trips.find((t) => t._id === id);
         if (trip) {
             setDeletePreviewTrip(trip);
@@ -232,7 +244,32 @@ const removeEditedLeg = (index: number) => {
             setDeletePreviewTrip(null);
         }
     };
+const closeModal = async (
+  modalRef: React.RefObject<HTMLDivElement | null>
+) => {
+  const bootstrap = await import(
+    '@/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js'
+  );
 
+  if (modalRef.current) {
+    const modal =
+      bootstrap.Modal.getInstance(modalRef.current) ||
+      new bootstrap.Modal(modalRef.current);
+
+    modal.hide();
+  }
+};
+const resetNewTrip = () => {
+  setNewTrip({
+    legs: [
+      {
+        city: '',
+        startDate: '',
+        endDate: '',
+      },
+    ],
+  });
+};
     
   return (
   <div>
@@ -281,7 +318,7 @@ const removeEditedLeg = (index: number) => {
             <button type="button" className="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#inputModal2">
                 Delete Trip
             </button>
-    <div className="modal fade" id="inputModal0" tabIndex={-1}>
+    <div className="modal fade" id="inputModal0" tabIndex={-1} ref={createModalRef}>
   <div className="modal-dialog">
     <div className="modal-content">
 
@@ -369,6 +406,7 @@ const removeEditedLeg = (index: number) => {
   className="modal fade"
   id="inputModal1"
   tabIndex={-1}
+  ref={editModalRef}
   aria-labelledby="inputModalLabel1"
   aria-hidden="true"
 >
@@ -394,7 +432,7 @@ const removeEditedLeg = (index: number) => {
           <select
             className="form-control mb-2"
             onChange={onEditSelectChange}
-            value={selectedTripId}
+            value={editTripId}
           >
             <option value="">Select a Trip</option>
 
@@ -495,6 +533,7 @@ const removeEditedLeg = (index: number) => {
   id="inputModal2"
   tabIndex={-1}
   aria-labelledby="inputModalLabel2"
+  ref={deleteModalRef}
   aria-hidden="true"
 >
   <div className="modal-dialog">
@@ -519,7 +558,7 @@ const removeEditedLeg = (index: number) => {
           <select
             className="form-control mb-2"
             onChange={onDeleteSelectChange}
-            value={selectedTripId}
+            value={deleteTripId}
           >
             <option value="">Select a Trip</option>
 
@@ -603,4 +642,4 @@ const removeEditedLeg = (index: number) => {
   </div>
 </div>
 </div>
-)}
+);}
