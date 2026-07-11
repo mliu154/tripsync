@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import type { Trip, CreateTripRequest, EditableTrip } from "@/trip_types";
 
@@ -37,14 +37,19 @@ export default function Home() {
     setNewTrip({ ...newTrip, legs: newTrip.legs.filter((_, i) => i !== index) });
   };
 
-  const fetchTrips = async () => {
+  const fetchTrips = useCallback(async () => {
     try {
       const response = await fetch("/api/trips");
-      if (response.status === 401) { router.push("/login"); return; }
+      if (response.status === 401) { 
+        router.push("/login"); 
+        return; 
+      }
       const data = await response.json();
       setTrips(data);
-    } catch (error) { console.error(error); }
-  };
+    } catch (error) { 
+      console.error(error); 
+    }
+  }, [router]);
 
   const updateEditedLeg = (index: number, field: "city" | "startDate" | "endDate", value: string) => {
     if (!editedTrip) return;
