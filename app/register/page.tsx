@@ -105,100 +105,64 @@ export default function Home() {
     };
 
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '100vh'
-        }}>
-            {errorMsg && (
-                <div style={{ color: 'red', marginBottom: '15px', fontWeight: 'bold' }}>
-                    {errorMsg}
-                </div>
-            )}
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 font-sans text-slate-900">
+            <div className="bg-white p-8 rounded-xl shadow-xl max-w-md w-full border border-gray-100">
+                <h2 className="text-3xl font-bold text-center mb-2 text-slate-800">Create Account</h2>
+                <p className="text-center text-gray-500 mb-6 text-sm">Join TripSync to start collaborating.</p>
 
-            <form onSubmit={handleRegister}>
-                <label>Username</label>
-                <br />
-                <input 
-                    type="text"
-                    value={username}
-                    onChange={handleUsernameChange}
-                    style={{
-                        border: '1px solid black',
-                        padding: '8px',
-                        borderRadius: '4px',
-                    }}
-                />
-                <br />
-                
-                <label>Password</label>
-                <br />
-                <input 
-                    type="password"
-                    value={password}
-                    onChange={handlePasswordChange}  
-                    style={{
-                        border: '1px solid black',
-                        padding: '8px',
-                        borderRadius: '4px',
-                    }}
-                />
-                <br />
-                
-                <label>Re-enter Password</label>
-                <br />
-                <input 
-                    type="password"
-                    value={confirmPassword}
-                    onChange={handleConfirmPasswordChange}  
-                    style={{
-                        border: '1px solid black',
-                        padding: '8px',
-                        borderRadius: '4px',
-                    }}
-                />
-                <br />
-
-                {qrCodeDataUrl && (
-                    <div style={{ marginTop: '15px', marginBottom: '15px' }}>
-                        <p style={{ fontSize: '14px', margin: '5px 0' }}>
-                            Scan this QR code with your authenticator app:
-                        </p>
-                        <img
-                            src={qrCodeDataUrl}
-                            alt="TOTP QR Code"
-                            width={200}
-                            style={{ display: 'block', margin: '10px 0' }}
-                        />
-                        <p style={{ fontSize: '12px' }}>
-                            Secret key:
-                            <br />
-                            <code>{secret}</code>
-                        </p>
+                {errorMsg && (
+                    <div className="bg-red-50 text-red-600 p-3 rounded-md mb-4 text-sm border border-red-200 font-medium">
+                        {errorMsg}
                     </div>
                 )}
 
-                <label>Initial verification code</label>
-                <br />
-                <input
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    maxLength={6}
-                    value={TOTP}
-                    onChange={handleTOTPChange}
-                    style={{
-                        border: '1px solid black',
-                        padding: '8px',
-                        borderRadius: '4px',
-                    }}
-                />
-                <br /><br />
-                
-                <input type="submit" value="Submit" style={{ cursor: 'pointer' }} />
-            </form>
+                <form onSubmit={handleRegister} className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <input 
+                            type="text" value={username} onChange={handleUsernameChange}
+                            className="w-full rounded-md border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input 
+                            type="password" value={password} onChange={handlePasswordChange}  
+                            className="w-full rounded-md border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Re-enter Password</label>
+                        <input 
+                            type="password" value={confirmPassword} onChange={handleConfirmPasswordChange}  
+                            className="w-full rounded-md border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                        />
+                    </div>
+
+                    {qrCodeDataUrl && (
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 flex flex-col items-center mt-6">
+                            <p className="text-sm font-medium text-gray-700 mb-2 text-center">Scan with Authenticator App</p>
+                            <img src={qrCodeDataUrl} alt="TOTP QR Code" className="w-40 h-40 mb-2 rounded-md shadow-sm" />
+                            <p className="text-xs text-gray-500 text-center break-all">
+                                Secret: <code className="font-bold bg-gray-200 px-1 rounded">{secret}</code>
+                            </p>
+                        </div>
+                    )}
+
+                    <div className="pt-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-1 text-center">Initial verification code</label>
+                        <input
+                            type="text" inputMode="numeric" pattern="[0-9]*" maxLength={6} value={TOTP} onChange={handleTOTPChange}
+                            className="w-full rounded-md border border-gray-300 p-3 text-center text-2xl tracking-[0.5em] font-mono focus:ring-2 focus:ring-blue-500 outline-none"
+                            placeholder="000000"
+                        />
+                    </div>
+                    
+                    <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors mt-4">
+                        Submit & Register
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }
