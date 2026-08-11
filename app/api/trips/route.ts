@@ -6,6 +6,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import dbConnect from '@/dbConnect';
 import TripObj from '@/models/TripObj';
 import { encryptSecret, decryptSecret } from '@/crypto';
+import { decryptTripLegs } from '@/TripMapper';
 
 // ----- TypeScript Types -----
 type TripLegInput = {
@@ -47,18 +48,10 @@ export async function GET() {
   const userId = new mongoose.Types.ObjectId(payload.userId);
 
   // Fetch trips for this user
-  const trips = (await TripObj.find({ userIds: userId })) as TripDocument[];
+  const trips = (await TripObj.find({ userIds: userId }).populate('userIds', 'usernameEncrypted')) as unknown as TripDocument[];
 
   // Decrypt each leg
-  const decryptedTrips = trips.map(trip => ({
-    _id: trip._id,
-    userIds: trip.userIds,
-    legs: trip.legs.map(leg => ({
-      city: decryptSecret(leg.cityEncrypted),
-      startDate: decryptSecret(leg.startDateEncrypted),
-      endDate: decryptSecret(leg.endDateEncrypted),
-    })),
-  }));
+  const decryptedTrips = trips.map(trip => decryptTripLegs(trip));
 
   return NextResponse.json(decryptedTrips);
 }
