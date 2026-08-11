@@ -1,3 +1,6 @@
+// app/api/broadcast/trips/route.ts
+
+
 import { NextRequest, NextResponse } from "next/server";
 import { getBroadcastPayload, broadcastTrips } from "@/services/BroadcastService";
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { encryptSecret, decryptSecret } from '@/crypto';
 import { TripDocument } from '@/trip_types';
 import { Types } from 'mongoose';
@@ -9,30 +10,53 @@ function isPopulatedUser(
   return user !== null && typeof user === 'object' && user.usernameEncrypted !== undefined;
 }
 
+// NEW: Bulletproof decryption helper
+function safeDecrypt(value: string | undefined, fallback: string = ""): string {
+  if (!value) return fallback;
+  
+  // If the string doesn't contain our encryption delimiter, assume it's legacy plain-text data
+  if (!value.includes(':')) return value;
+  
+  try {
+    return decryptSecret(value);
+  } catch (error) {
+    console.error("Failed to decrypt value:", error);
+    return fallback;
+  }
+}
+
 export function decryptTripLegs(trip: TripDocument) {
   return {
     _id: trip._id.toString(),
+    name: safeDecrypt(trip.nameEncrypted, "Untitled Trip"),
     
-    // Safely extract the raw ID
     userIds: trip.userIds.map(user => {
-      if (isPopulatedUser(user)) {
-        return user._id.toString();
-      }
+      if (isPopulatedUser(user)) return user._id.toString();
       return user.toString();
     }),
     
-    // Safely extract AND decrypt the username
     usernames: trip.userIds.map(user => {
-      if (isPopulatedUser(user)) {
-        return decryptSecret(user.usernameEncrypted);
-      }
+      if (isPopulatedUser(user)) return safeDecrypt(user.usernameEncrypted, "Unknown User");
       return "Unknown User";
     }),
     
+    // NEW: Safely map hotels
+    hotels: (trip.hotels || []).map(hotel => ({
+      hotelName: safeDecrypt(hotel.hotelNameEncrypted, "Unknown Hotel"),
+      checkIn: safeDecrypt(hotel.checkInEncrypted, ""),
+      checkOut: safeDecrypt(hotel.checkOutEncrypted, ""),
+    })),
+    
     legs: trip.legs.map(leg => ({
-      city: decryptSecret(leg.cityEncrypted),
-      startDate: decryptSecret(leg.startDateEncrypted),
-      endDate: decryptSecret(leg.endDateEncrypted),
+      city: safeDecrypt(leg.cityEncrypted, "Unknown City"),
+      startDate: safeDecrypt(leg.startDateEncrypted, "N/A"),
+      endDate: safeDecrypt(leg.endDateEncrypted, "N/A"),
+      note: safeDecrypt(leg.noteEncrypted, ""), // NEW
+      // NEW: Safely map nested attractions
+      attractions: (leg.attractions || []).map(attr => ({
+        name: safeDecrypt(attr.nameEncrypted, ""),
+        description: safeDecrypt(attr.descriptionEncrypted, ""),
+      })),
     })),
   };
 }

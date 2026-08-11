@@ -1,8 +1,11 @@
+// app/login/page.tsx
+
+
 'use client'
 import React, {
     useState,
     ChangeEvent,
-    FormEvent,
+    SubmitEvent,
 } from 'react';
 import { useRouter } from 'next/navigation'; // Import useRouter from Next.js
 
@@ -10,9 +13,11 @@ export default function Home() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [TOTP, setTOTP] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
     const router = useRouter();
+
     const handleLogin = async (
-        event: FormEvent<HTMLFormElement>
+        event: SubmitEvent<HTMLFormElement>
     ): Promise<void> => {
         event.preventDefault();
 
@@ -29,10 +34,10 @@ export default function Home() {
                 }),
             });
 
-
             const result = await response.json();
+
             if (!response.ok) {
-                throw new Error(result.error);
+                throw new Error(result.error || 'Failed to Login');
             }
             console.log('Submission successful:', result);
 
@@ -42,8 +47,10 @@ export default function Home() {
             router.push('/trips');
         } catch (error) {
             if (error instanceof Error) {
+                setErrorMsg(error.message);
                 console.error('Submission error:', error.message);
             } else {
+                setErrorMsg('An unknown error occurred.');
                 console.error('Unknown submission error:', error);
             }
         }
@@ -62,16 +69,23 @@ export default function Home() {
     };
     const handleTOTPChange = (
     event: ChangeEvent<HTMLInputElement>
-): void => {
+    ): void => {
     const value = event.target.value.replace(/\D/g, '');
     setTOTP(value);
-};
+    };
 
   return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 font-sans text-slate-900">
             <div className="bg-white p-8 rounded-xl shadow-xl max-w-md w-full border border-gray-100">
                 <h2 className="text-3xl font-bold text-center mb-6 text-slate-800">Welcome to TripSync</h2>
                 
+                {/* Display error message if it exists */}
+                {errorMsg && (
+                    <div className="bg-red-50 text-red-600 p-3 rounded-md mb-4 text-sm border border-red-200 font-medium">
+                        {errorMsg}
+                    </div>
+                )}
+
                 <form onSubmit={handleLogin} className="space-y-5">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>

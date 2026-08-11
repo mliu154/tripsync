@@ -1,3 +1,5 @@
+// app/api/login/route.ts
+
 import jwt from 'jsonwebtoken';
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/dbConnect';

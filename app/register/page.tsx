@@ -1,5 +1,8 @@
+// app/register/page.tsx
+
+
 'use client'
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, SubmitEvent } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
@@ -40,7 +43,7 @@ export default function Home() {
 
     // ... Keep handleRegister and change functions exactly as they were ...
     const handleRegister = async (
-        event: FormEvent<HTMLFormElement>
+        event: SubmitEvent<HTMLFormElement>
     ): Promise<void> => {
         event.preventDefault();
         setErrorMsg(''); 

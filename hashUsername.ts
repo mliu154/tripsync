@@ -1,3 +1,5 @@
+// hashUsername.ts
+
 import crypto from 'crypto';
 export function hashUsername(username: string): string {
   return crypto

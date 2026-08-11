@@ -1,3 +1,5 @@
+// dbConnect.ts
+
 import mongoose, { Mongoose } from 'mongoose';
 
 import dns from 'dns';

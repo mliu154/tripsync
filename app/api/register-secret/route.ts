@@ -1,3 +1,6 @@
+// app/api/register-secret/route.ts
+
+
 import { NextResponse } from 'next/server';
 import { authenticator } from '@otplib/preset-default';
 

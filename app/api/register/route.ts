@@ -1,4 +1,6 @@
-// Inside /app/api/register/route.ts
+// /app/api/register/route.ts
+
+
 import { NextRequest, NextResponse } from 'next/server';
 import * as bcrypt from 'bcrypt-ts';
 import { authenticator } from '@otplib/preset-default';

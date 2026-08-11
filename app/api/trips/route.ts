@@ -1,4 +1,5 @@
 // /app/api/trips/route.ts
+
 import mongoose, { Types } from 'mongoose';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
@@ -7,29 +8,13 @@ import dbConnect from '@/dbConnect';
 import TripObj from '@/models/TripObj';
 import { encryptSecret, decryptSecret } from '@/crypto';
 import { decryptTripLegs } from '@/TripMapper';
-
-// ----- TypeScript Types -----
-type TripLegInput = {
-  city: string;
-  startDate: string;
-  endDate: string;
-};
-
-type CreateTripRequest = {
-  legs: TripLegInput[];
-};
+import { TripDocument, CreateTripRequest } from '@/trip_types';
 
 // How the Trip document looks in MongoDB
 type EncryptedTripLeg = {
   cityEncrypted: string;
   startDateEncrypted: string;
   endDateEncrypted: string;
-};
-
-type TripDocument = {
-  _id: Types.ObjectId;
-  userIds: Types.ObjectId[];
-  legs: EncryptedTripLeg[];
 };
 
 // ----- GET Route: fetch all trips for the logged-in user -----
@@ -81,16 +66,29 @@ export async function POST(request: NextRequest): Promise<Response> {
   }
 
   // Encrypt each leg
-  const encryptedLegs: EncryptedTripLeg[] = body.legs.map(leg => ({
+  const encryptedLegs = body.legs.map(leg => ({
     cityEncrypted: encryptSecret(leg.city),
     startDateEncrypted: encryptSecret(leg.startDate),
     endDateEncrypted: encryptSecret(leg.endDate),
+    noteEncrypted: encryptSecret(leg.note || ""),
+    attractions: (leg.attractions || []).map(attr => ({
+      nameEncrypted: encryptSecret(attr.name),
+      descriptionEncrypted: encryptSecret(attr.description || ""),
+    })),
+  }));
+
+  const encryptedHotels = (body.hotels || []).map(hotel => ({
+    hotelNameEncrypted: encryptSecret(hotel.hotelName),
+    checkInEncrypted: encryptSecret(hotel.checkIn),
+    checkOutEncrypted: encryptSecret(hotel.checkOut),
   }));
 
   // Save trip
   const trip = await TripObj.create({
+    nameEncrypted: encryptSecret(body.name || 'Untitled Trip'),
     userIds: [userId],
     legs: encryptedLegs,
+    hotels: encryptedHotels,
   });
 
   return NextResponse.json(trip, { status: 201 });
