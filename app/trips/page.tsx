@@ -129,10 +129,10 @@ export default function Home() {
     try {
       const response = await fetch(`/api/user_settings/${tripId}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username }) });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || "Failed to invite user.");
+      if (!response.ok) throw new Error(data.error || "邀请用户失败。");
       
       await fetchTrips();
-      showToast(`Successfully added ${username} to the trip!`, "success");
+      showToast(`成功把 ${username} 加入到旅程!`, "success");
       return true;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "An unknown error occurred.";
@@ -152,10 +152,10 @@ export default function Home() {
       if (!response.ok) throw new Error(data.error || "Failed to remove user.");
       
       await fetchTrips();
-      showToast(`Successfully removed ${username}.`, "success");
+      showToast(`成功把 ${username}.从旅程移除`, "success");
       return true;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "An unknown error occurred.";
+      const message = err instanceof Error ? err.message : "出现未知错误。";
       showToast(message, "error");
       return false;
     }
@@ -166,14 +166,14 @@ export default function Home() {
       const response = await fetch(`/api/user_settings/${tripId}`, { method: "DELETE" });
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
-        throw new Error(data.error || "Failed to leave trip.");
+        throw new Error(data.error || "离开旅程失败。");
       }
       
       await fetchTrips();
-      showToast("You have left the trip.", "success");
+      showToast("你成功离开了旅程。", "success");
       return true;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "An unknown error occurred.";
+      const message = err instanceof Error ? err.message : "出现未知错误。";
       showToast(message, "error");
       return false;
     }
@@ -263,17 +263,17 @@ export default function Home() {
 
       {/* Navigation */}
       <nav className="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-md">
-        <h1 className="text-xl font-bold tracking-wider">✈️ TripSync</h1>
+        <h1 className="text-xl font-bold tracking-wider">✈️ 旅行同步计划</h1>
         <button type="button" className="bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded text-xs font-bold transition-colors" data-bs-toggle="modal" data-bs-target="#logoutModal">
-          Logout
+          登出
         </button>
       </nav>
 
       <main className="max-w-6xl mx-auto p-6 mt-8 grow w-full">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b border-gray-200 pb-4">
-          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">My Trips</h2>
+          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">我的旅程</h2>
           <button type="button" className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-bold hover:bg-blue-700 shadow-md transition-colors" data-bs-toggle="modal" data-bs-target="#createModal">
-            + Create New Trip
+            + 创建新旅程
           </button>
         </div>
 
@@ -290,7 +290,7 @@ export default function Home() {
                   <div className="bg-slate-800 text-white px-6 py-4 flex justify-between items-center">
                     <h3 className="font-bold text-lg truncate pr-4">{trip.name || "Untitled Trip"}</h3>
                     <a href={`/trips/${trip._id}`} className="bg-white/10 hover:bg-white/20 px-3 py-1 rounded text-xs font-bold transition-colors border border-white/20 whitespace-nowrap">
-                      Open →
+                      打开 →
                     </a>
                   </div>
                   
@@ -299,9 +299,9 @@ export default function Home() {
                     <table className="w-full text-left text-sm text-gray-600">
                       <thead className="bg-gray-50 text-gray-500 uppercase text-xs font-bold border-b border-gray-200">
                         <tr>
-                          <th className="px-6 py-3 tracking-wider">City</th>
-                          <th className="px-6 py-3 tracking-wider">Start Date</th>
-                          <th className="px-6 py-3 tracking-wider">End Date</th>
+                          <th className="px-6 py-3 tracking-wider">城市</th>
+                          <th className="px-6 py-3 tracking-wider">开始日期</th>
+                          <th className="px-6 py-3 tracking-wider">结束日期</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100">
@@ -319,7 +319,7 @@ export default function Home() {
                   {/* Card Footer - Members Section */}
                   <div className="bg-slate-50 px-6 py-4 border-t border-gray-200">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">Roster:</span>
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">用户:</span>
                       {owner && (
                         <span className="px-2.5 py-1 bg-purple-100 text-purple-800 text-xs rounded-full font-bold shadow-sm border border-purple-200 flex items-center">
                           👑 {owner}
@@ -330,7 +330,7 @@ export default function Home() {
                           {member}
                         </span>
                       ))}
-                      {members.length === 0 && <span className="text-xs text-gray-400 italic">No members</span>}
+                      {members.length === 0 && <span className="text-xs text-gray-400 italic">没有成员</span>}
                     </div>
                   </div>
 
@@ -341,35 +341,35 @@ export default function Home() {
                       data-bs-toggle="modal" data-bs-target="#editModal"
                       className="text-xs font-bold px-3 py-1.5 rounded bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
                     >
-                      ✏️ Edit
+                      ✏️ 编辑
                     </button>
                     <button 
                       onClick={() => setActiveTrip(trip)}
                       data-bs-toggle="modal" data-bs-target="#inviteModal"
                       className="text-xs font-bold px-3 py-1.5 rounded bg-green-50 text-green-700 hover:bg-green-100 transition-colors"
                     >
-                      ➕ Invite
+                      ➕ 邀请
                     </button>
                     <button 
                       onClick={() => setActiveTrip(trip)}
                       data-bs-toggle="modal" data-bs-target="#removeUserModal"
                       className="text-xs font-bold px-3 py-1.5 rounded bg-orange-50 text-orange-700 hover:bg-orange-100 transition-colors"
                     >
-                      ➖ Remove
+                      ➖ 移除
                     </button>
                     <button 
                       onClick={() => setActiveTrip(trip)}
                       data-bs-toggle="modal" data-bs-target="#leaveModal"
                       className="text-xs font-bold px-3 py-1.5 rounded bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
                     >
-                      🚪 Leave
+                      🚪 离开
                     </button>
                     <button 
                       onClick={() => setActiveTrip(trip)}
                       data-bs-toggle="modal" data-bs-target="#deleteModal"
                       className="text-xs font-bold px-3 py-1.5 rounded bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
                     >
-                      🗑️ Delete
+                      🗑️ 删除
                     </button>
                   </div>
 
@@ -379,8 +379,8 @@ export default function Home() {
           ) : (
             <div className="col-span-full text-center py-20 text-gray-500 bg-white rounded-xl border-2 border-dashed border-gray-300">
               <div className="text-5xl mb-4 opacity-50">🏖️</div>
-              <p className="text-xl font-bold text-slate-700">No trips found</p>
-              <p className="text-sm mt-2 font-medium">Click &apos;+ Create New Trip&apos; to start planning your next adventure!</p>
+              <p className="text-xl font-bold text-slate-700">没有找到旅程</p>
+              <p className="text-sm mt-2 font-medium">Click &apos;+ 创建新旅程&apos; 以开始规划您的下一次探险！</p>
             </div>
           )}
         </div>
@@ -394,40 +394,40 @@ export default function Home() {
           <div className="modal-content">
             <form onSubmit={onAddSubmit}>
               <div className="modal-header">
-                <h5 className="modal-title font-bold text-slate-800">Create New Trip</h5>
+                <h5 className="modal-title font-bold text-slate-800">创建新旅程</h5>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" />
               </div>
               <div className="modal-body">
                 <div className="mb-4">
-                  <label className="text-sm font-bold text-slate-700 mb-1 block">Trip Name</label>
-                  <input type="text" className="form-control font-bold" placeholder="e.g. Summer Getaway" value={newTrip.name} onChange={(e) => setNewTrip({...newTrip, name: e.target.value})} required />
+                  <label className="text-sm font-bold text-slate-700 mb-1 block">旅程名称</label>
+                  <input type="text" className="form-control font-bold" placeholder="为旅程定一个名字" value={newTrip.name} onChange={(e) => setNewTrip({...newTrip, name: e.target.value})} required />
                 </div>
                 {newTrip.legs.map((leg, index) => (
                   <div key={index} className="border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50">
-                    <h6 className="font-bold text-slate-600 mb-3 text-sm uppercase tracking-wider">Leg {index + 1}</h6>
-                    <input type="text" className="form-control mb-3" placeholder="Destination City" value={leg.city} onChange={(e) => updateLeg(index, "city", e.target.value)} required />
+                    <h6 className="font-bold text-slate-600 mb-3 text-sm uppercase tracking-wider">第 {index + 1} 站</h6>
+                    <input type="text" className="form-control mb-3" placeholder="目的地城市" value={leg.city} onChange={(e) => updateLeg(index, "city", e.target.value)} required />
                     <div className="grid grid-cols-2 gap-3 mb-3">
                         <div>
-                            <label className="text-xs font-semibold text-gray-500 mb-1 block">Start Date</label>
+                            <label className="text-xs font-semibold text-gray-500 mb-1 block">开始日期</label>
                             <input type="date" className="form-control" value={leg.startDate} onChange={(e) => updateLeg(index, "startDate", e.target.value)} required />
                         </div>
                         <div>
-                            <label className="text-xs font-semibold text-gray-500 mb-1 block">End Date</label>
+                            <label className="text-xs font-semibold text-gray-500 mb-1 block">结束日期</label>
                             <input type="date" className="form-control" value={leg.endDate} onChange={(e) => updateLeg(index, "endDate", e.target.value)} required />
                         </div>
                     </div>
                     {/* NEW: Note field added here */}
                     <div>
-                        <label className="text-xs font-semibold text-gray-500 mb-1 block">Trip Notes</label>
-                        <textarea className="form-control text-sm" rows={2} placeholder="Optional notes for this leg..." value={leg.note} onChange={(e) => updateLeg(index, "note", e.target.value)}></textarea>
+                        <label className="text-xs font-semibold text-gray-500 mb-1 block">旅程备注</label>
+                        <textarea className="form-control text-sm" rows={2} placeholder="对于本站可以加入特别记录..." value={leg.note} onChange={(e) => updateLeg(index, "note", e.target.value)}></textarea>
                     </div>
-                    {newTrip.legs.length > 1 && ( <button type="button" className="btn btn-sm btn-outline-danger mt-3" onClick={() => removeLeg(index)}>Remove Leg</button> )}
+                    {newTrip.legs.length > 1 && ( <button type="button" className="btn btn-sm btn-outline-danger mt-3" onClick={() => removeLeg(index)}>删除此站</button> )}
                   </div>
                 ))}
-                <button type="button" className="btn btn-outline-secondary w-full border-dashed font-bold" onClick={addLeg}>+ Add Another Destination</button>
+                <button type="button" className="btn btn-outline-secondary w-full border-dashed font-bold" onClick={addLeg}>+ 添加下一站</button>
               </div>
               <div className="modal-footer bg-gray-50">
-                <button type="submit" className="btn btn-primary w-full font-bold py-2">Save Trip</button>
+                <button type="submit" className="btn btn-primary w-full font-bold py-2">保存旅程</button>
               </div>
             </form>
           </div>
@@ -440,27 +440,27 @@ export default function Home() {
           <div className="modal-content">
             <form onSubmit={onEditSubmit}>
               <div className="modal-header">
-                <h5 className="modal-title font-bold text-slate-800">Edit {editedTrip?.name || "Trip"}</h5>
+                <h5 className="modal-title font-bold text-slate-800">编辑 {editedTrip?.name || "Trip"}</h5>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" />
               </div>
               <div className="modal-body">
                 {editedTrip && (
                   <>
                     <div className="mb-4">
-                      <label className="text-sm font-bold text-slate-700 mb-1 block">Trip Name</label>
+                      <label className="text-sm font-bold text-slate-700 mb-1 block">旅程名称</label>
                       <input type="text" className="form-control font-bold" value={editedTrip.name} onChange={(e) => setEditedTrip({...editedTrip, name: e.target.value})} required />
                     </div>
                     {editedTrip.legs.map((leg, index) => (
                       <div key={index} className="border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50">
-                        <h6 className="font-bold text-slate-600 mb-3 text-sm uppercase tracking-wider">Leg {index + 1}</h6>
+                        <h6 className="font-bold text-slate-600 mb-3 text-sm uppercase tracking-wider">第{index + 1}站</h6>
                         <input type="text" className="form-control mb-3" value={leg.city} onChange={(e) => updateEditedLeg(index, "city", e.target.value)} required />
                         <div className="grid grid-cols-2 gap-3 mb-3">
                             <input type="date" className="form-control" value={leg.startDate} onChange={(e) => updateEditedLeg(index, "startDate", e.target.value)} required />
                             <input type="date" className="form-control" value={leg.endDate} onChange={(e) => updateEditedLeg(index, "endDate", e.target.value)} required />
                         </div>
                         <div className="flex space-x-2 mt-2">
-                            <button type="button" className="btn btn-sm btn-outline-danger flex-1 font-bold" onClick={() => removeEditedLeg(index)}>Remove</button>
-                            <button type="button" className="btn btn-sm btn-outline-secondary flex-1 font-bold" onClick={addEditedLeg}>+ Add</button>
+                            <button type="button" className="btn btn-sm btn-outline-danger flex-1 font-bold" onClick={() => removeEditedLeg(index)}>删除</button>
+                            <button type="button" className="btn btn-sm btn-outline-secondary flex-1 font-bold" onClick={addEditedLeg}>+ 添加</button>
                         </div>
                       </div>
                     ))}
@@ -468,7 +468,7 @@ export default function Home() {
                 )}
               </div>
               <div className="modal-footer bg-gray-50">
-                <button type="submit" className="btn btn-primary w-full font-bold py-2" disabled={!editedTrip}>Save Changes</button>
+                <button type="submit" className="btn btn-primary w-full font-bold py-2" disabled={!editedTrip}>保存变更</button>
               </div>
             </form>
           </div>
@@ -481,18 +481,18 @@ export default function Home() {
           <div className="modal-content">
             <form onSubmit={onAddUserSubmit}>
               <div className="modal-header">
-                <h5 className="modal-title font-bold text-green-700">Invite User</h5>
+                <h5 className="modal-title font-bold text-green-700">邀请用户</h5>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" />
               </div>
               <div className="modal-body">
-                <p className="text-sm text-gray-600 mb-4">Invite a registered user to <strong>{activeTrip?.name}</strong>.</p>
+                <p className="text-sm text-gray-600 mb-4">把一个已经注册的用户邀请到旅程 <strong>{activeTrip?.name}</strong></p>
                 <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-2">Participant Username</label>
-                    <input type="text" className="form-control" placeholder="Enter exactly as registered" value={invitedUser} onChange={(e) => setInvitedUser(e.target.value)} required />
+                    <label className="block text-sm font-bold text-slate-700 mb-2">参与者用户名</label>
+                    <input type="text" className="form-control" placeholder="准确无误地输入" value={invitedUser} onChange={(e) => setInvitedUser(e.target.value)} required />
                 </div>
               </div>
               <div className="modal-footer bg-gray-50">
-                <button type="submit" className="btn btn-success w-full font-bold">Grant Access</button>
+                <button type="submit" className="btn btn-success w-full font-bold">允许进入</button>
               </div>
             </form>
           </div>
@@ -505,13 +505,13 @@ export default function Home() {
           <div className="modal-content">
             <form onSubmit={onRemoveUserSubmit}>
               <div className="modal-header">
-                <h5 className="modal-title font-bold text-orange-700">Remove User</h5>
+                <h5 className="modal-title font-bold text-orange-700">移除用户</h5>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" />
               </div>
               <div className="modal-body">
-                <p className="text-sm text-gray-600 mb-4">Select a user to remove from <strong>{activeTrip?.name}</strong>.</p>
+                <p className="text-sm text-gray-600 mb-4">选择一个你要移除的用户 <strong>{activeTrip?.name}</strong>.</p>
                 <select className="form-control mb-4" onChange={(e) => setUserToRemove(e.target.value)} value={userToRemove} required>
-                  <option value="" disabled>-- Select a Member --</option>
+                  <option value="" disabled>-- 选择一个成员 --</option>
                   {/* Extract usernames from active trip, filtering out undefined/null */}
                   {(activeTrip?.usernames?.length ? activeTrip.usernames : (activeTrip?.userIds || [])).map((user, idx) => (
                     <option key={idx} value={user}>{user}</option>
@@ -519,7 +519,7 @@ export default function Home() {
                 </select>
               </div>
               <div className="modal-footer bg-gray-50">
-                <button type="submit" className="btn btn-warning text-orange-950 w-full font-bold" disabled={!userToRemove}>Remove User</button>
+                <button type="submit" className="btn btn-warning text-orange-950 w-full font-bold" disabled={!userToRemove}>移除用户</button>
               </div>
             </form>
           </div>
@@ -532,16 +532,16 @@ export default function Home() {
           <div className="modal-content">
             <form onSubmit={onLeaveSubmit}>
               <div className="modal-header">
-                <h5 className="modal-title font-bold text-slate-800">Leave Trip</h5>
+                <h5 className="modal-title font-bold text-slate-800">离开旅程</h5>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" />
               </div>
               <div className="modal-body text-center py-6">
-                <p className="text-lg mb-2">Are you sure you want to leave <strong>{activeTrip?.name}</strong>?</p>
-                <p className="text-sm text-gray-500">You will lose access to the itinerary immediately.</p>
+                <p className="text-lg mb-2">你确定要离开 <strong>{activeTrip?.name}</strong> 吗？</p>
+                <p className="text-sm text-gray-500">你将立即失去对行程的访问权限。</p>
               </div>
               <div className="modal-footer bg-gray-50 flex gap-2">
-                <button type="button" className="btn btn-light flex-1 font-bold border border-gray-300" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" className="btn btn-secondary flex-1 font-bold">Leave Trip</button>
+                <button type="button" className="btn btn-light flex-1 font-bold border border-gray-300" data-bs-dismiss="modal">取消</button>
+                <button type="submit" className="btn btn-secondary flex-1 font-bold">离开旅程</button>
               </div>
             </form>
           </div>
@@ -554,16 +554,16 @@ export default function Home() {
           <div className="modal-content">
             <form onSubmit={onDeleteSubmit}>
               <div className="modal-header">
-                <h5 className="modal-title text-red-600 font-bold">Delete Trip</h5>
+                <h5 className="modal-title text-red-600 font-bold">删除旅程</h5>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" />
               </div>
               <div className="modal-body text-center py-6">
-                <p className="text-lg mb-2 text-slate-800">Delete <strong>{activeTrip?.name}</strong> forever?</p>
-                <p className="text-sm text-red-600 font-medium">This action cannot be undone and will remove the trip for all users.</p>
+                <p className="text-lg mb-2 text-slate-800">永久删除 <strong>{activeTrip?.name}</strong>？</p>
+                <p className="text-sm text-red-600 font-medium">此操作无法撤销，将为所有用户移除该旅程。</p>
               </div>
               <div className="modal-footer bg-gray-50 flex gap-2">
-                <button type="button" className="btn btn-light flex-1 font-bold border border-gray-300" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" className="btn btn-danger flex-1 font-bold">Delete Permanently</button>
+                <button type="button" className="btn btn-light flex-1 font-bold border border-gray-300" data-bs-dismiss="modal">取消</button>
+                <button type="submit" className="btn btn-danger flex-1 font-bold">永久删除</button>
               </div>
             </form>
           </div>
@@ -576,12 +576,12 @@ export default function Home() {
           <div className="modal-content p-4">
             <form onSubmit={onLogoutSubmit}>
               <div className="text-center mb-4">
-                <h5 className="text-xl font-bold text-slate-800">Ready to leave?</h5>
-                <p className="text-gray-500 text-sm mt-2">You will need your TOTP code to log back in.</p>
+                <h5 className="text-xl font-bold text-slate-800">准备离开？</h5>
+                <p className="text-gray-500 text-sm mt-2">你将需要你的基于时间的一次性密码来重新登录。</p>
               </div>
               <div className="flex space-x-3">
                  <button type="button" className="btn btn-light flex-1 font-medium border border-gray-300" data-bs-dismiss="modal">Cancel</button>
-                 <button type="submit" className="btn btn-danger flex-1 font-bold" data-bs-dismiss="modal">Logout</button>
+                 <button type="submit" className="btn btn-danger flex-1 font-bold" data-bs-dismiss="modal">登出</button>
               </div>
             </form>
           </div>

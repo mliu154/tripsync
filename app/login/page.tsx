@@ -37,9 +37,9 @@ export default function Home() {
             const result = await response.json();
 
             if (!response.ok) {
-                throw new Error(result.error || 'Failed to Login');
+                throw new Error(result.error || '登陆失败');
             }
-            console.log('Submission successful:', result);
+            console.log('提交成功:', result);
 
             setUsername('');
             setPassword('');
@@ -48,10 +48,10 @@ export default function Home() {
         } catch (error) {
             if (error instanceof Error) {
                 setErrorMsg(error.message);
-                console.error('Submission error:', error.message);
+                console.error('提交错误:', error.message);
             } else {
-                setErrorMsg('An unknown error occurred.');
-                console.error('Unknown submission error:', error);
+                setErrorMsg('出现未知错误。');
+                console.error('未知提交错误:', error);
             }
         }
     };
@@ -77,7 +77,7 @@ export default function Home() {
   return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 font-sans text-slate-900">
             <div className="bg-white p-8 rounded-xl shadow-xl max-w-md w-full border border-gray-100">
-                <h2 className="text-3xl font-bold text-center mb-6 text-slate-800">Welcome to TripSync</h2>
+              <h2 className="text-3xl font-bold text-center mb-6 text-slate-800">欢迎来到旅行同步计划</h2>
                 
                 {/* Display error message if it exists */}
                 {errorMsg && (
@@ -88,18 +88,18 @@ export default function Home() {
 
                 <form onSubmit={handleLogin} className="space-y-5">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">用户名</label>
                         <input 
                             type="text"
                             value={username}
                             onChange={handleUsernameChange}
                             className="w-full rounded-md border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                            placeholder="Enter your username"
+                            placeholder="输入您的用户名"
                         />
                     </div>
                     
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">密码</label>
                         <input 
                             type="password"
                             value={password}
@@ -110,7 +110,7 @@ export default function Home() {
                     </div>
                     
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1 text-center mt-2">Verification code (TOTP)</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1 text-center mt-2">验证码（基于时间的一次性密码）</label>
                         <input
                             type="text"
                             inputMode="numeric"
@@ -127,7 +127,7 @@ export default function Home() {
                         type="submit" 
                         className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors mt-4"
                     >
-                        Login
+                        登录
                     </button>
                 </form>
             </div>

@@ -13,7 +13,7 @@ export async function POST(request: NextRequest): Promise<Response> {
         await dbConnect();
         const authFailed = () =>
   NextResponse.json(
-    { error: 'Authentication failed.' },
+    { error: '核对身份失败。' },
     { status: 401 }
   );
       const body = await request.json();

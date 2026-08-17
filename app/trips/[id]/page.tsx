@@ -34,7 +34,7 @@ export default function TripDetail() {
       }
 
       if (!response.ok) {
-        throw new Error("Failed to fetch trip details.");
+        throw new Error("提取旅程详情失败。");
       }
 
       const data = await response.json();
@@ -43,7 +43,7 @@ export default function TripDetail() {
       const message =
         error instanceof Error
           ? error.message
-          : "Failed to fetch trip details.";
+          : "提取旅程详情失败。";
 
       showToast(message, "error");
     } finally {
@@ -81,12 +81,12 @@ export default function TripDetail() {
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to save trip details.");
+        throw new Error(data.error || "保存旅程详细资料失败。");
       }
 
       await fetchTripDetails();
 
-      showToast("Trip details updated!", "success");
+      showToast("旅程详细资料成功更新!", "success");
 
       const bootstrap = await import(
         "@/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"
@@ -103,7 +103,7 @@ export default function TripDetail() {
       const message =
         error instanceof Error
           ? error.message
-          : "Failed to save trip details.";
+          : "保存旅程详细资料失败。";
 
       showToast(message, "error");
     }
@@ -173,7 +173,7 @@ export default function TripDetail() {
     }
 
     if (editedTrip.legs.length <= 1) {
-      showToast("A trip must have at least one leg.", "error");
+      showToast("旅程必须至少有一站。", "error");
       return;
     }
 
@@ -327,7 +327,7 @@ export default function TripDetail() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex justify-center items-center font-bold text-slate-500">
-        Loading trip details...
+        加载详细旅程资料...
       </div>
     );
   }
@@ -335,7 +335,7 @@ export default function TripDetail() {
   if (!trip) {
     return (
       <div className="min-h-screen bg-slate-50 flex justify-center items-center font-bold text-red-500">
-        Trip not found.
+        无法找到旅程。
       </div>
     );
   }
@@ -368,7 +368,7 @@ export default function TripDetail() {
             onClick={() => router.push("/trips")}
             className="text-blue-400 hover:text-blue-300 font-bold text-sm mb-4 flex items-center gap-1 transition-colors"
           >
-            ← Back to Dashboard
+            ← 返回主页
           </button>
 
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-2">
@@ -376,7 +376,7 @@ export default function TripDetail() {
           </h1>
 
           <p className="text-slate-400 font-medium">
-            Trip ID:{" "}
+            旅行编号:{" "}
             <span className="font-mono text-slate-500">
               {trip._id}
             </span>
@@ -392,7 +392,7 @@ export default function TripDetail() {
 
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm font-bold text-slate-400 uppercase tracking-wider mr-2">
-              Travelers:
+              旅客:
             </span>
 
             {trip.usernames.length > 0 ? (
@@ -412,7 +412,7 @@ export default function TripDetail() {
               ))
             ) : (
               <span className="text-sm text-slate-400 italic">
-                No users found
+                未找到用户
               </span>
             )}
           </div>
@@ -423,7 +423,7 @@ export default function TripDetail() {
             data-bs-target="#editDetailsModal"
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-bold shadow-sm transition-colors w-full md:w-auto"
           >
-            ✏️ Edit Itinerary
+            ✏️ 编辑旅行计划
           </button>
         </div>
 
@@ -432,7 +432,7 @@ export default function TripDetail() {
           <div className="mb-10">
 
             <h2 className="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-              🏨 Accommodations
+              🏨 住宿
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -447,14 +447,14 @@ export default function TripDetail() {
 
                   <div className="flex flex-col gap-1 text-sm text-slate-600 font-medium">
                     <span className="flex justify-between">
-                      <span>Check In:</span>
+                      <span>入住:</span>
                       <span className="text-slate-900">
                         {hotel.checkIn}
                       </span>
                     </span>
 
                     <span className="flex justify-between">
-                      <span>Check Out:</span>
+                      <span>退房:</span>
                       <span className="text-slate-900">
                         {hotel.checkOut}
                       </span>
@@ -470,7 +470,7 @@ export default function TripDetail() {
         <div>
 
           <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-            🗺️ Itinerary
+            🗺️ 旅行计划
           </h2>
 
           <div className="space-y-6">
@@ -505,7 +505,7 @@ export default function TripDetail() {
                     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
 
                       <h5 className="text-xs font-bold text-yellow-800 uppercase tracking-wider mb-1">
-                        Trip Notes
+                        特别注意事项
                       </h5>
 
                       <p className="text-sm text-yellow-900 whitespace-pre-wrap">
@@ -517,7 +517,7 @@ export default function TripDetail() {
 
                   {/* Attractions */}
                   <h5 className="font-bold text-slate-700 mb-3 border-b border-slate-100 pb-2">
-                    Things To Do / Attractions
+                    景点
                   </h5>
 
                   {leg.attractions && leg.attractions.length > 0 ? (
@@ -547,7 +547,7 @@ export default function TripDetail() {
                     </ul>
                   ) : (
                     <p className="text-sm text-slate-400 italic">
-                      No attractions planned for this leg yet.
+                      在本站没有去任何景点的计划
                     </p>
                   )}
 
@@ -576,7 +576,7 @@ export default function TripDetail() {
               <div className="modal-header bg-slate-50 border-b border-slate-200">
 
                 <h5 className="modal-title font-bold text-slate-800">
-                  Edit Itinerary Details
+                  编辑旅行计划详细资料
                 </h5>
 
                 <button
@@ -597,7 +597,7 @@ export default function TripDetail() {
                     <div className="bg-white p-4 rounded-lg border border-slate-200 mb-6 shadow-sm">
 
                       <label className="text-sm font-bold text-slate-700 mb-1 block">
-                        Trip Name
+                        旅行名称
                       </label>
 
                       <input
@@ -621,7 +621,7 @@ export default function TripDetail() {
                       <div className="flex justify-between items-center mb-4">
 
                         <h6 className="font-bold text-slate-800 text-lg">
-                          🏨 Hotels & Stays
+                          🏨 酒店/住宿
                         </h6>
 
                         <button
@@ -629,7 +629,7 @@ export default function TripDetail() {
                           onClick={addHotel}
                           className="btn btn-sm btn-outline-primary font-bold"
                         >
-                          + Add Stay
+                          + 加入住宿地点
                         </button>
 
                       </div>
@@ -667,7 +667,7 @@ export default function TripDetail() {
 
                             <div>
                               <label className="text-[10px] uppercase font-bold text-slate-500">
-                                Check In
+                                入住
                               </label>
 
                               <input
@@ -687,7 +687,7 @@ export default function TripDetail() {
 
                             <div>
                               <label className="text-[10px] uppercase font-bold text-slate-500">
-                                Check Out
+                                退房
                               </label>
 
                               <input
@@ -711,7 +711,7 @@ export default function TripDetail() {
 
                       {editedTrip.hotels.length === 0 && (
                         <p className="text-sm text-slate-400 italic text-center py-2">
-                          No stays added yet.
+                          尚未加入住处。
                         </p>
                       )}
 
@@ -721,7 +721,7 @@ export default function TripDetail() {
                     <div className="flex justify-between items-center mb-3">
 
                       <h6 className="font-bold text-slate-800 text-lg">
-                        🗺️ Trip Legs & Attractions
+                        🗺️ 旅行站点和景点
                       </h6>
 
                       <button
@@ -729,7 +729,7 @@ export default function TripDetail() {
                         onClick={addLeg}
                         className="btn btn-sm btn-outline-primary font-bold"
                       >
-                        + Add Leg
+                        + 加入下一站
                       </button>
 
                     </div>
@@ -745,7 +745,7 @@ export default function TripDetail() {
                         <div className="flex justify-between items-center mb-3">
 
                           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                            Leg {legIndex + 1}
+                            第 {legIndex + 1} 站
                           </span>
 
                           {editedTrip.legs.length > 1 && (
@@ -754,7 +754,7 @@ export default function TripDetail() {
                               onClick={() => removeLeg(legIndex)}
                               className="btn btn-sm btn-outline-danger font-bold"
                             >
-                              Remove Leg
+                              移除站点
                             </button>
                           )}
 
@@ -829,7 +829,7 @@ export default function TripDetail() {
                           <div className="flex justify-between items-center mb-2">
 
                             <span className="text-xs font-bold text-slate-600 uppercase">
-                              Attractions
+                              景点
                             </span>
 
                             <button
@@ -837,7 +837,7 @@ export default function TripDetail() {
                               onClick={() => addAttraction(legIndex)}
                               className="text-xs text-blue-600 hover:text-blue-800 font-bold"
                             >
-                              + Add Item
+                              + 加入一项
                             </button>
 
                           </div>
@@ -912,7 +912,7 @@ export default function TripDetail() {
                       onClick={addLeg}
                       className="btn btn-outline-secondary w-full border-dashed font-bold mb-2"
                     >
-                      + Add Another Destination
+                      + 加入下一站
                     </button>
 
                   </>
@@ -928,7 +928,7 @@ export default function TripDetail() {
                   className="btn btn-primary w-full font-bold py-2"
                   disabled={!editedTrip}
                 >
-                  Save All Details
+                  保存所有细节
                 </button>
 
               </div>
